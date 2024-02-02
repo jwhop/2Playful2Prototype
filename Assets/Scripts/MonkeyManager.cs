@@ -62,60 +62,73 @@ public class MonkeyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gamepad.aButton.wasReleasedThisFrame) Respawn();
         sprite3D.transform.position = monkeyCollider.transform.position + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f) * damageForce;
         sprite3D.transform.eulerAngles = monkeyCollider.transform.eulerAngles;
     }
 
     private void FixedUpdate()
     {
-        //Debug.Log(gamepad.leftTrigger.value);
-        if (gamepad.leftTrigger.value < 1 && gamepad.leftShoulder.value == 0 && LeftHandTarget.isAttached) LeftHandTarget.DetachRung();
-        if (gamepad.rightTrigger.value < 1 && gamepad.rightShoulder.value == 0 && RightHandTarget.isAttached) RightHandTarget.DetachRung();
-        
-        //if (LeftHandTarget.isAttached || RightHandTarget.isAttached) //this doesnt work with two hinge joints for some reason 
+        if (StartTimer.Instance.canMove)
         {
-            monkeyCollider.GetComponent<Rigidbody>().AddForce(Vector3.right * gamepad.leftStick.value.x * swingAmount);
-        }
+            //Debug.Log(gamepad.leftTrigger.value);
+            if (gamepad.leftTrigger.value < 1 && gamepad.leftShoulder.value == 0 && LeftHandTarget.isAttached) LeftHandTarget.DetachRung();
+            if (gamepad.rightTrigger.value < 1 && gamepad.rightShoulder.value == 0 && RightHandTarget.isAttached) RightHandTarget.DetachRung();
 
-        if (gamepad.leftTrigger.value > 0 && !LeftHandTarget.isAttached)
-        {
-            LeftHandTargetObject.transform.position =  Vector3.MoveTowards(LeftHandTargetObject.transform.position, new Vector3(reachTargetFront.transform.position.x, reachTargetFront.transform.position.y, LeftHandTargetObject.transform.position.z), 0.25f);
+            //if (LeftHandTarget.isAttached || RightHandTarget.isAttached) //this doesnt work with two hinge joints for some reason 
+            {
+                monkeyCollider.GetComponent<Rigidbody>().AddForce(Vector3.right * gamepad.leftStick.value.x * swingAmount);
+            }
+
+            if (gamepad.leftTrigger.value > 0 && !LeftHandTarget.isAttached)
+            {
+                LeftHandTargetObject.transform.position = Vector3.MoveTowards(LeftHandTargetObject.transform.position, new Vector3(reachTargetFront.transform.position.x, reachTargetFront.transform.position.y, LeftHandTargetObject.transform.position.z), 0.25f);
+            }
+            else if (gamepad.leftShoulder.value > 0 && !LeftHandTarget.isAttached)
+            {
+                LeftHandTargetObject.transform.position = Vector3.MoveTowards(LeftHandTargetObject.transform.position, new Vector3(reachTargetBack.transform.position.x, reachTargetBack.transform.position.y, LeftHandTargetObject.transform.position.z), 0.25f);
+            }
+            else if (gamepad.leftTrigger.value == 0 && gamepad.leftShoulder.value == 0)
+            {
+                LeftHandTargetObject.transform.localPosition = Vector3.MoveTowards(LeftHandTargetObject.transform.localPosition, originalLeftHandPos, 0.05f);
+            }
+            if (gamepad.rightTrigger.value > 0 && !RightHandTarget.isAttached)
+            {
+                RightHandTargetObject.transform.position = Vector3.MoveTowards(RightHandTargetObject.transform.position, new Vector3(reachTargetFront.transform.position.x, reachTargetFront.transform.position.y, RightHandTargetObject.transform.position.z), 0.25f);
+            }
+            else if (gamepad.rightShoulder.value > 0 && !RightHandTarget.isAttached)
+            {
+                RightHandTargetObject.transform.position = Vector3.MoveTowards(RightHandTargetObject.transform.position, new Vector3(reachTargetBack.transform.position.x, reachTargetBack.transform.position.y, RightHandTargetObject.transform.position.z), 0.25f);
+            }
+            else if (gamepad.rightTrigger.value == 0 && gamepad.rightShoulder.value == 0)
+            {
+                RightHandTargetObject.transform.localPosition = Vector3.MoveTowards(RightHandTargetObject.transform.localPosition, originalRightHandPos, 0.05f);
+            }
+
+            //if(featherBody != null && featherObject != null)
+            {
+                if (Mathf.Abs(gamepad.rightStick.value.x) < 0.1f && Mathf.Abs(gamepad.rightStick.value.y) < 0.1f)
+                {
+                    if (!isLeft) Debug.Log("retreating tail");
+                    featherBody.transform.position = Vector3.MoveTowards(featherBody.transform.position, featherObject.transform.position, 0.05f);
+                }
+                else if (Mathf.Abs(Vector3.Distance(featherBody.transform.position, featherObject.transform.position)) <= 4f)
+                {
+                    if (!isLeft) Debug.Log("translating along input");
+                    featherBody.transform.Translate(Vector3.forward * gamepad.rightStick.value.y * featherMoveAmount + Vector3.up * (isLeft ? gamepad.rightStick.value.x : -gamepad.rightStick.value.x) * featherMoveAmount);
+                }
+                else
+                {
+                    if (!isLeft) Debug.Log("translating along circle");
+                    float angle = Mathf.Atan2(gamepad.rightStick.value.y, isLeft ? gamepad.rightStick.value.x : -gamepad.rightStick.value.x);
+                    featherBody.transform.position = featherObject.transform.position + (4f * Mathf.Cos(angle) * Vector3.left) + (4f * Mathf.Sin(angle) * Vector3.up);
+                }
+            }
+
+            //LeftHandTargetObject.GetComponent<Rigidbody>().AddForce(LeftHandTargetObject.transform.forward * gamepad.leftTrigger.value * forceAmount, ForceMode.Force);
+            //RightHandTargetObject.GetComponent<Rigidbody>().AddForce(Vector3.up * gamepad.rightTrigger.value * forceAmount, ForceMode.Force);
+
         }
-        else if (gamepad.leftShoulder.value > 0 && !LeftHandTarget.isAttached)
-        {
-            LeftHandTargetObject.transform.position = Vector3.MoveTowards(LeftHandTargetObject.transform.position, new Vector3(reachTargetBack.transform.position.x, reachTargetBack.transform.position.y, LeftHandTargetObject.transform.position.z), 0.25f);
-        }
-        else if (gamepad.leftTrigger.value == 0 && gamepad.leftShoulder.value == 0)
-        {
-            LeftHandTargetObject.transform.localPosition = Vector3.MoveTowards(LeftHandTargetObject.transform.localPosition, originalLeftHandPos, 0.05f);
-        }
-        if (gamepad.rightTrigger.value > 0 && !RightHandTarget.isAttached)
-        {
-            RightHandTargetObject.transform.position = Vector3.MoveTowards(RightHandTargetObject.transform.position, new Vector3(reachTargetFront.transform.position.x, reachTargetFront.transform.position.y, RightHandTargetObject.transform.position.z), 0.25f);
-        }
-        else if (gamepad.rightShoulder.value > 0 && !RightHandTarget.isAttached)
-        {
-            RightHandTargetObject.transform.position = Vector3.MoveTowards(RightHandTargetObject.transform.position, new Vector3(reachTargetBack.transform.position.x, reachTargetBack.transform.position.y, RightHandTargetObject.transform.position.z), 0.25f);
-        }
-        else if (gamepad.rightTrigger.value == 0 && gamepad.rightShoulder.value == 0)
-        {
-            RightHandTargetObject.transform.localPosition = Vector3.MoveTowards(RightHandTargetObject.transform.localPosition, originalRightHandPos, 0.05f);
-        }
-        if(Mathf.Abs(gamepad.rightStick.value.x) < 0.1f && Mathf.Abs(gamepad.rightStick.value.y) < 0.1f)
-        {
-            featherBody.transform.position = Vector3.MoveTowards(featherBody.transform.position, featherObject.transform.position, 0.05f);
-        }
-        else if (Vector3.Distance(featherBody.transform.position, featherObject.transform.position) <= 4f)
-        {
-            featherBody.transform.Translate(Vector3.forward * gamepad.rightStick.value.y * featherMoveAmount + Vector3.up * gamepad.rightStick.value.x * featherMoveAmount);
-        }
-        else
-        {
-            float angle = Mathf.Atan2(gamepad.rightStick.value.y, gamepad.rightStick.value.x);
-            featherBody.transform.position = featherObject.transform.position +(4f * Mathf.Cos(angle) * Vector3.right) + (4f * Mathf.Sin(angle) * Vector3.up);
-        }
-        //LeftHandTargetObject.GetComponent<Rigidbody>().AddForce(LeftHandTargetObject.transform.forward * gamepad.leftTrigger.value * forceAmount, ForceMode.Force);
-        //RightHandTargetObject.GetComponent<Rigidbody>().AddForce(Vector3.up * gamepad.rightTrigger.value * forceAmount, ForceMode.Force);
 
         //if (gamepad.leftShoulder.isPressed) monkeyCollider.GetComponent<Rigidbody>().AddForce((LeftHandRung.transform.position - monkeyCollider.transform.position).normalized);
     }
