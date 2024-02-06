@@ -8,6 +8,7 @@ TagManager:
   - StartButton
   - Ground
   - Feather
+  - Abdomen
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Rung
   - Monkey
   - Feather
-  - 
+  - Mandibles
   - 
   - 
   - 
