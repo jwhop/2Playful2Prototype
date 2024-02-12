@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Week 1- monkeys/StartScreen.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
-    path: Assets/Scenes/Week 1- monkeys/MainGame.unity
-    guid: 262abfd2c333f374aa77b3f0228f39d4
+    path: Assets/Scenes/Week 2- beetles/BeetlePrototypeScene.unity
+    guid: c40599968da9c7645a323baf214b0709
   m_configObjects: {}
