@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class BeetleController : MonoBehaviour
 {
@@ -46,7 +47,7 @@ public class BeetleController : MonoBehaviour
         sprite3DThorax.transform.eulerAngles = colliderThorax.transform.eulerAngles - diffRotationThroax;
         sprite3DLeftMandible.transform.eulerAngles = colliderLeftMandible.transform.eulerAngles;
         sprite3DRightMandible.transform.eulerAngles = colliderRightMandible.transform.eulerAngles;
-
+        if (gamepad.aButton.wasReleasedThisFrame) SceneManager.LoadScene(0);
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -54,8 +55,8 @@ public class BeetleController : MonoBehaviour
         //Debug.Log(gamepad.leftStick.value.x);
         if (isGrabbingLeft || isGrabbingRight)
         {
-            rbAbdomen.AddForceAtPosition(Vector3.down * gravityWhileGrabbingForce, rbAbdomen.transform.position + rbAbdomen.transform.forward/1f);
-            rbAbdomen.AddForceAtPosition(Vector3.up * gravityWhileGrabbingForce + (isLeft? 1f : -1f) *-Vector3.right * gravityWhileGrabbingForce, rbAbdomen.transform.position - rbAbdomen.transform.forward / 1f);
+            rbAbdomen.AddForceAtPosition(-rbAbdomen.transform.up * gravityWhileGrabbingForce, rbAbdomen.transform.position + rbAbdomen.transform.forward/1f);
+            rbAbdomen.AddForceAtPosition(rbAbdomen.transform.up * gravityWhileGrabbingForce + (isLeft? 1f : -1f) *-Vector3.right * gravityWhileGrabbingForce, rbAbdomen.transform.position - rbAbdomen.transform.forward / 1f);
 
             if (isGrabbingLeft && (gamepad.leftTrigger.value > 0 || gamepad.rightTrigger.value == 0))
             {
@@ -68,12 +69,11 @@ public class BeetleController : MonoBehaviour
         }
         else
         {
-            if (rbThorax.transform.eulerAngles.z < 25f && !isGrabbed)
+            if (rbThorax.transform.eulerAngles.z < 25f  && rbAbdomen.transform.position.y <-1.25f)
             {
                 Debug.Log("forcing down" + gameObject.name);
-                rbAbdomen.AddForceAtPosition(-rbAbdomen.transform.up * gravityWhileGrabbingForce * 2f, rbAbdomen.transform.position - rbAbdomen.transform.forward);
-                rbThorax.AddForce(-rbThorax.transform.right * gravityWhileGrabbingForce * 2f);
-
+                rbAbdomen.AddForceAtPosition(-rbAbdomen.transform.up * gravityWhileGrabbingForce * 1f, rbAbdomen.transform.position - rbAbdomen.transform.forward);
+                rbThorax.AddForce(-rbThorax.transform.right * gravityWhileGrabbingForce * 1f);
             }
         }
         
@@ -122,7 +122,6 @@ public class BeetleController : MonoBehaviour
             if (isGrabbingLeft || isGrabbingRight)
             {
                 rbThorax.AddForce(-rbThorax.transform.up * moveForceHorizontal / 1f + gamepad.leftStick.value.y * rbThorax.transform.right * moveForceVertical);
-
             }
         }
     }
