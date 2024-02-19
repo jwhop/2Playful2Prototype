@@ -5,10 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Week 1- monkeys/StartScreen.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Week 1- monkeys/MainGame.unity
     guid: 262abfd2c333f374aa77b3f0228f39d4
+  - enabled: 1
+    path: Assets/Scenes/Week 3 - echolocation/EchoPrototype.unity
+    guid: ab76406def87c7342b4687adc202d589
   m_configObjects: {}

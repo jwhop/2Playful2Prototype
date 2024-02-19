@@ -10,7 +10,7 @@ public class CameraPositionUpdate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Camera.main.clearFlags = CameraClearFlags.Nothing;
+        Camera.main.clearFlags = CameraClearFlags.SolidColor;
         InvokeRepeating("UpdateCameraPosition", 0.1f, timerLength);
         rb = GetComponent<Rigidbody>();
     }
@@ -18,7 +18,7 @@ public class CameraPositionUpdate : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        rb.AddForce(Input.GetAxis("Vertical") *  transform.forward);
+        //rb.AddForce(Input.GetAxis("Vertical") *  transform.forward);
     }
 
     void UpdateCameraPosition()
@@ -27,7 +27,7 @@ public class CameraPositionUpdate : MonoBehaviour
         Shader.SetGlobalVector("_CamPosition", transform.position);
         Shader.SetGlobalVector("_CamDirection", transform.forward);
         //RenderTexture.active = renderTexture;
-        StartCoroutine(FixCameraClearing());
+        //StartCoroutine(FixCameraClearing());
     }
     IEnumerator FixCameraClearing()
     {

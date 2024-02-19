@@ -7,7 +7,9 @@ public class MonkeyManager : MonoBehaviour
 {
     [Header("WHICH MONKEY ARE YOU")]
     public bool isLeft;
+    
     [Header("MESH STUFF")]
+ 
     public GameObject sprite3D; // actual mesh
     public GameObject monkeyCollider, monkeyHeadCollider; //has rb and collider 
     public GameObject LeftHandTargetObject, RightHandTargetObject; //targets for IK
@@ -22,12 +24,14 @@ public class MonkeyManager : MonoBehaviour
     public float AttachRungForce;
     private Gamepad gamepad; //controller
     public GameObject LeftHandIndicator, RightHandIndicator;
+    
     [Header("FORCES")]
     public float forceAmount;
     public float swingAmount;
     public float featherMoveAmount; //amount to raise hands
     public GameObject featherObject;
     private GameObject LeftHandRung, RightHandRung; //currently attached rungs
+    
     [Header("UI OBJECT")]
     public GameObject LifeHolder;
     private Rigidbody rb;
@@ -63,7 +67,7 @@ public class MonkeyManager : MonoBehaviour
     void Update()
     {
         if (gamepad.aButton.wasReleasedThisFrame) Respawn();
-        sprite3D.transform.position = monkeyCollider.transform.position + new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f) * damageForce;
+        sprite3D.transform.position = monkeyCollider.transform.position;
         sprite3D.transform.eulerAngles = monkeyCollider.transform.eulerAngles;
     }
 
@@ -92,6 +96,7 @@ public class MonkeyManager : MonoBehaviour
             {
                 LeftHandTargetObject.transform.localPosition = Vector3.MoveTowards(LeftHandTargetObject.transform.localPosition, originalLeftHandPos, 0.05f);
             }
+
             if (gamepad.rightTrigger.value > 0 && !RightHandTarget.isAttached)
             {
                 RightHandTargetObject.transform.position = Vector3.MoveTowards(RightHandTargetObject.transform.position, new Vector3(reachTargetFront.transform.position.x, reachTargetFront.transform.position.y, RightHandTargetObject.transform.position.z), 0.25f);
