@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Week 1- monkeys/MainGame.unity
     guid: 262abfd2c333f374aa77b3f0228f39d4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Week 3 - echolocation/EchoPrototype.unity
     guid: ab76406def87c7342b4687adc202d589
+  - enabled: 1
+    path: Assets/Scenes/Week 4-ibex/prototypeScene.unity
+    guid: 3583730be2a037a40b587899cd9a583b
   m_configObjects: {}

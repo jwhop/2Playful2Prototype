@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class IbexController : MonoBehaviour
 {
@@ -66,8 +67,7 @@ public class IbexController : MonoBehaviour
         rearLeg2Sprite3D.transform.position = new Vector3(backLegsCollider.transform.position.x, backLegsCollider.transform.position.y - diffPositionBackLeg2, rearLeg2Sprite3D.transform.position.z);
         if (gamepad.aButton.wasReleasedThisFrame)
         {
-            transform.localScale = new Vector3(transform.localScale.x * -1, 1, 1);
-            isLeft = !isLeft;
+            SceneManager.LoadScene(0);
         }
     }
 
